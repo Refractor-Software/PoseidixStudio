@@ -31,7 +31,18 @@
 *.out
 *.app
 
-# IDE/Editor Folders
+# VS Code folders
+.vscode
 /.vscode
+
+# JetBrains IDE folders
+.idea
 /.idea
+
+# Visual Studio Code folders
+.vs
 /.vs
+
+# Build Tools folders
+Vendor
+/Vendor
