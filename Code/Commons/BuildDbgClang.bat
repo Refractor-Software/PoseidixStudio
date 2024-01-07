@@ -8,10 +8,9 @@ set BuildTarget=Dbg
 rem C++ standard to use.
 set CxxStd=20
 
-rem Basic compiler flags.
-
-rem -static tells the compiler to build for static library. (May not be necessary though.)
+rem Compiler flags.
 set ClFlags=
+
 rem -Oz is optimization for size and speed.
 set ClFlags=!ClFlags! -Oz
 rem -Wall enables all warnings.
@@ -24,16 +23,17 @@ rem -ffast-math enables fast floating-point math
 set ClFlags=!ClFlags! -ffast-math
 
 rem Linker options.
+rem These only apply to executables. Libraries (archives) don't need these.
+set LnkFlags=
 
 rem On Windows we need to link against the Windows SDK libraries. NOTE: Currently broken for some reason.
-set LnkFlags=-luser32
+set LnkFlags=!LnkFlags! -luser32
 rem We also need to link to Vulkan.
 set LnkFlags=!LnkFlags! -lvulkan-1
 set LnkFlags=!LnkFlags! -L%VULKAN_SDK%\Lib
 
 rem Any remaining macro definitions will go here.
 rem Right now this doesn't do anything.
-
 set ClDefs=
 
 call BuildMain.bat
