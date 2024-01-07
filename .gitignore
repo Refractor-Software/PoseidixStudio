@@ -32,6 +32,9 @@
 *.app
 
 # IDE/Editor Folders
+.vscode
 /.vscode
+.idea
 /.idea
+.vs
 /.vs
