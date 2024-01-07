@@ -8,6 +8,11 @@
 ## Building Poseidix Studio
 
 ### Windows
-- Install [MSYS2](https://www.msys2.org/) to the `Vendor/MSYS2` directory (if the directory does not exist yet, which it probably won't, create it; it is gitignored for a reason). **It is critical that you install to this directory,
-because FASTBuild scripts check here for build tools to avoid depending on the environment.
-- Install the [MinGW Clang toolset](https://packages.msys2.org/groups/mingw-w64-clang-x86_64-toolchain)
+- Install [MSYS2](https://www.msys2.org/) to C:msys64\ (this should be the default path in the installer).
+- Install the [MinGW Clang toolset](https://packages.msys2.org/groups/mingw-w64-clang-x86_64-toolchain) from the UCRT64 terminal (the one that opens by default after installation).
+- Install the [Vulkan SDK](https://vulkan.lunarg.com/sdk/home). Install the following components when prompted, and nothing more or less:
+    - Shader Toolchain Debug Symbols (64-bit)
+    - GLM headers
+    - SDL2 libraries and headers
+    - Volk header, source, and library
+    - Vulkan Memory Allocator header

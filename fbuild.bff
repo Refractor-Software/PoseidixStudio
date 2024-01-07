@@ -9,29 +9,60 @@
     ._StdInc = '$_Clang64$\include\c++\v1'
 ]
 
-Compiler( 'Clang-Win32-Debug' )
+Compiler( 'Clang-Win32-Dbg' )
 {
     Using (._Clang)
     .Executable = ._Exec
 }
 
-Compiler( 'Clang-Win32-Release' )
+Compiler( 'Clang-Win32-Dst' )
 {
     Using (._Clang)
     .Executable = ._Exec
 
 }
 
-.CompilerOptions = '%1'         ; Input
+; Global configuration for Clang compiler
+.CompilerOptions        = '-c'          ; Run just the compiler, don't link yet
+                        + ' %1'         ; Input file
+.CompilerInputPattern   = '*.cxx'       ; Check for .cxx files
 
 // POSEIDIX COMMONS
 //-----------------------------------------------------------------------------
 
-Library( 'Poseidix-Commons-Dbg' )
-{
-    .Compiler = 'Clang-Win32-Debug'
+._PdxCmnLibName = 'PoseidixCommons.lib'
+._PdxCmnLibOut  = 'Bin\Commons'
 
-    .Librarian = '$_Clang64$\bin\ld.exe'
-    .LibrarianOptions = 'foo'
-    .LibrarianOutput = 'bar'
+Library( 'Poseidix-Commons-Dst' )
+{
+    .Compiler               = 'Clang-Win32-Dst'
+    .CompilerOptions        + ' -Oz'
+                            + ' -Wall'
+                            + ' -Werror'
+                            + ' -std=c++20'
+                            + ' -ffast-math'
+                            + ' -o %2'
+    .CompilerOutputPath     = '$_PdxCmnLibOut$\Obj'
+
+    .Librarian              = '$_Clang64$\bin\llvm-ar.exe'
+    .LibrarianOptions       = 'rc %2 %1'
+    .LibrarianOutput        = '$_PdxCmnLibOut$\$_PdxCmnLibName$'
+
+    .CompilerInputPath      = 'Code\Commons\Source'
+}
+
+Executable( 'Poseidix-Engine-Editor' )
+{
+    .Linker                 = '$_Clang64$\bin\lld-link.exe'
+    .LinkerOptions          = '%1'
+                            + ' -L$_PdxCmnLibOut$'
+                            + ' -l$_PdxCmnLibName$'
+                            + ' -o %2'
+    .LinkerOutput           = 'Bin\GameEngine\Editor\PdxEngineEd.exe'
+    .Libraries              = '$_PdxCmnLibOut$\$_PdxCmnLibName$'
+}
+
+Alias( 'all-dst' )
+{
+    .Targets = { 'Poseidix-Commons-Dst', 'Poseidix-Engine-Editor' }
 }
