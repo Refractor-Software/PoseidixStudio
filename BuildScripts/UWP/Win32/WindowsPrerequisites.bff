@@ -1,0 +1,18 @@
+#once
+
+#if __WINDOWS__
+    Print('$MsgPrefix$ Building for the Windows platform.')
+    Print('$MsgPrefix$ Using Microsoft Visual C Compiler.')
+
+    .bBuildWindows  = true
+    #define __USE_MSVC__
+
+    .LibExt         = 'lib'
+    .ObjExt         = 'obj'
+    .AppExt         = 'exe'
+
+    .BinOut         = '\Win32'
+    .ObjOut         = '\Win32'
+
+    #include "../MSVC_Collect.bff"
+#endif

@@ -1,0 +1,4 @@
+#once
+
+; Compiled libary output, with path
+.LibrarianOutput = '$LibrarianOutputPath$\CommonLib-$BuildVer$.$LibExt$'

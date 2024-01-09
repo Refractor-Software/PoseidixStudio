@@ -1,0 +1,16 @@
+#once
+
+.CompilerOptions    = ' -c %1'                  ; Only compile, don't link
+                    + ' -o %2'                  ; Output file
+                    + ' -Oz'                    ; Optimize for speed and size
+                    + ' -Wall'                  ; Show all warnings
+                    + ' -Werror'                ; Treat all warnings as errors
+                    + ' -std=c++$CxxStandard$'  ; Sets the C++ standard
+                    + ' -ffast-math'            ; Fast floating-point math
+                    + ' -fno-exceptions'        ; Disable exceptions
+                    + ' -IInclude'              ; Base include path
+                    + ' -I$VULKAN_SDK$\Include' ; Vulkan include path
+#if __BUILD_DEBUG__
+                    + ' -D_DEBUG'               ; Defines the no-debug macro
+                    + ' -g'                     ; Debug info
+#endif ; __BUILD_DEBUG__

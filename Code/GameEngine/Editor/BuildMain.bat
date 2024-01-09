@@ -1,39 +1,51 @@
 @echo off
-rem Build script for Poseidix Commons library (debug)
+rem Build script for Poseidix Engine's editor application
 setlocal EnableDelayedExpansion
 
 rem The "control panel" for the batch script.
 
-set LibName=PoseidixCommons%BuildTarget%
-set EchoPfx=[POSEIDIX STUDIO: COMMONS]
+set AppName=PoseidixEditor%BuildTarget%
+set EchoPfx=[POSEIDIX STUDIO: ENGINE EDITOR]
+set CmnDir=Commons
 set BinDir=Bin
 set BldDir=%BuildTarget%
 set ObjDir=Obj
-set LibDir=Lib
+set AppDir=App
 set ObjDirF=%BinDir%\%BldDir%\%ObjDir%
-set LibDirF=%BinDir%\%BldDir%\%LibDir%
+set AppDirF=%BinDir%\%BldDir%\%AppDir%
 set SrcDir=Source
 set IncDir=Include
 set SrcExt=cxx
 set ObjExt=obj
-set LibExt=lib
+set AppExt=exe
 
 rem Internal workings of the script. Avoid touching this unless you know
 rem what you're doing.
 
-rem Create the required directories to compile the library.
+rem Create the required directories to compile the program.
 if not exist %BinDir% mkdir %BinDir%
 cd %BinDir%
 if not exist %BldDir% mkdir %BldDir%
 cd %BldDir%
 if not exist %ObjDir% mkdir %ObjDir%
-if not exist %LibDir% mkdir %LibDir%
+if not exist %AppDir% mkdir %AppDir%
 cd ..\..
+
+rem Find the Commons directory. It should always be one above.
+cd ..
+if not exist %CmnDir% (
+   echo Could not find Poseidix Commons. Poseidix Commons is required by Poseidix Engine.
+   exit /b
+)
+
+
 
 echo %EchoPfx% Starting build...
 
 rem Include paths.
+set Incs=
 
+rem Include the Commons library.
 rem First path is the Poseidix parent path.
 rem %IncDir% points to the parent include path.
 set Incs=-I%IncDir%
@@ -82,7 +94,7 @@ for /r %%f in (*.%ObjExt%) do (
 
 rem Call the archiver/librarian to link everything into the final libary.
 echo %EchoPfx% Linking objects and creating archive...
-llvm-ar rc ..\%LibDir%\%LibName%.%LibExt% %ObjFiles%
+llvm-ar rc ..\%AppDir%\%AppName%.%AppExt% %ObjFiles%
 
 if %errorlevel% neq 0 (
     echo %EchoPfx% Linking failed, terminating.

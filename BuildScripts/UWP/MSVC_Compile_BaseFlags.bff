@@ -1,0 +1,20 @@
+#once
+
+; MSVC for some reason is brutally fragile and sensitive, so we have to be
+; extremely pedantic with the build commands
+
+.CompilerOptions	= ' /c %1'				                ; Only compile, don't link
+                    + ' /Fo"%2"'		                    ; Output file
+                    + ' /O2'                                ; Optimize for speed over size
+                    + ' /W3'				                ; Warning level 3 (4 is too pedantic)
+                    + ' /WX'				                ; Warnings are errors
+                    + ' /nologo'		                    ; No compiler spam
+                    + ' /I"$CodePath$\$LibPath$\Include"'   ; Base include path
+                    + ' /I"$VULKAN_SDK$\Include"'           ; Vulkan include path
+                    + ' /I"$MSVC$\include"'                 ; MSVC libstdc++ include path
+                    + ' /I"$WINSDK_INCLUDE$"'               ; Windows SDK include path
+                    + ' /EHsc'                              ; Exception stack unwinding
+#if __BUILD_DEBUG__
+                    + ' /D_DEBUG'
+                    + ' /Z7'				                ; Debugging (.pdb)
+#endif ; __BUILD_DEBUG__

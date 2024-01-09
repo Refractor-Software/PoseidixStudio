@@ -1,68 +1,29 @@
-// Clang setup (Windows)
+// FASTBuild configuration for CommonLib
 //-----------------------------------------------------------------------------
 
-._Clang64 = 'Vendor\MSYS2\clang64'
+// Control Panel
+// From here you can change some settings related to building the library.
+//-----------------------------------------------------------------------------
 
-._Clang =
+.ControlPanel =
 [
-    ._Exec = '$_Clang64$\bin\clang++.exe'
-    ._StdInc = '$_Clang64$\include\c++\v1'
+    ; Sets the C++ standard version
+    .CxxStandard    = 20
+
+    ; Whether to build a debug or distribution library.
+    .BuildDebugLib  = true
+
+    ; The architecture to build for (x64, x86, or ARM).
+    .BuildArch      = 'x64'
+
+    ; Name of the library being built
+    .LibName        = 'CommonLib'
+
+    ; Path to search for files in
+    .LibPath        = .LibName
 ]
 
-Compiler( 'Clang-Win32-Dbg' )
-{
-    Using (._Clang)
-    .Executable = ._Exec
-}
-
-Compiler( 'Clang-Win32-Dst' )
-{
-    Using (._Clang)
-    .Executable = ._Exec
-
-}
-
-; Global configuration for Clang compiler
-.CompilerOptions        = '-c'          ; Run just the compiler, don't link yet
-                        + ' %1'         ; Input file
-.CompilerInputPattern   = '*.cxx'       ; Check for .cxx files
-
-// POSEIDIX COMMONS
+// Compile Package for Library
 //-----------------------------------------------------------------------------
 
-._PdxCmnLibName = 'PoseidixCommons.lib'
-._PdxCmnLibOut  = 'Bin\Commons'
-
-Library( 'Poseidix-Commons-Dst' )
-{
-    .Compiler               = 'Clang-Win32-Dst'
-    .CompilerOptions        + ' -Oz'
-                            + ' -Wall'
-                            + ' -Werror'
-                            + ' -std=c++20'
-                            + ' -ffast-math'
-                            + ' -o %2'
-    .CompilerOutputPath     = '$_PdxCmnLibOut$\Obj'
-
-    .Librarian              = '$_Clang64$\bin\llvm-ar.exe'
-    .LibrarianOptions       = 'rc %2 %1'
-    .LibrarianOutput        = '$_PdxCmnLibOut$\$_PdxCmnLibName$'
-
-    .CompilerInputPath      = 'Code\Commons\Source'
-}
-
-Executable( 'Poseidix-Engine-Editor' )
-{
-    .Linker                 = '$_Clang64$\bin\lld-link.exe'
-    .LinkerOptions          = '%1'
-                            + ' -L$_PdxCmnLibOut$'
-                            + ' -l$_PdxCmnLibName$'
-                            + ' -o %2'
-    .LinkerOutput           = 'Bin\GameEngine\Editor\PdxEngineEd.exe'
-    .Libraries              = '$_PdxCmnLibOut$\$_PdxCmnLibName$'
-}
-
-Alias( 'all-dst' )
-{
-    .Targets = { 'Poseidix-Commons-Dst', 'Poseidix-Engine-Editor' }
-}
+#include "BuildScripts/ClPackage_Library.bff"

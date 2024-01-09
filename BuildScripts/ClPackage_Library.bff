@@ -1,0 +1,112 @@
+#once
+
+// FASTBuild configuration for libaries
+//-----------------------------------------------------------------------------
+
+// Control Panel is expected to exist in parent file.
+// It should follow the format as shown:
+//
+// .ControlPanel =
+// [
+//     ; Sets the C++ standard version
+//     .CxxStandard    = 20
+//
+//     ; Whether to build a debug or distribution library.
+//     .BuildDebugLib  = true
+//
+//     ; The architecture to build for (x64, x86, or ARM).
+//     .BuildArch      = 'x64'
+//
+//     ; Name of the library being built
+//     .LibName        = 'CommonLib'
+//
+//     ; Utility string for when we print build info or errors.
+//     .MsgPrefix      = '[$LibName$]'
+// ]
+//
+// Once this is set up, include this file and you're good to go.
+//-----------------------------------------------------------------------------
+
+; Import ControlPanel into the global space.
+Using( .ControlPanel )
+
+; Utility string for when we print build info or errors.
+.MsgPrefix      = '[$LibName$]'
+
+; Centralized error message variable (since execution won't last beyond
+; an error anyway).
+.ErrMsg     = ''
+; Function which prints the error message and halts execution.
+function FatalErr( .InMessage )
+{
+    Error('[CommonLib] FATAL ERROR: $InMessage$')
+}
+
+; Inform the user that the build has started.
+Print('$MsgPrefix$ Starting build.')
+
+If( .BuildDebugLib )
+{
+
+#define __BUILD_DEBUG__
+
+}
+
+; If true tell the user we're building for debug.
+If( .BuildDebugLib )
+{
+    Print('$MsgPrefix$ Building debug library.')
+} ; If( .BuildDebugLib )
+
+; Otherwise tell the user we're building for distribution.
+If( !.BuildDebugLib )
+{
+    Print('$MsgPrefix$ Building distribution library.')
+} ; If( !.BuildDebugLib )
+
+; Print some info about where to edit the build mode.
+.CfgInfoMsg     = 'Use the .ControlPanel struct at the '
+                + 'beginning of fbuild.bff to select the build mode '
+                + '(debug or distribution).'
+Print('$MsgPrefix$ $CfgInfoMsg$')
+
+// Common Platform Setup
+//-----------------------------------------------------------------------------
+
+#include "CommonPrerequisites.bff"             ; Vulkan SDK, etc
+
+// Build Platforms
+//-----------------------------------------------------------------------------
+
+#include "UWP/Win32/WindowsPrerequisites.bff"  ; Windows
+#include "Unix/Apple/MacPrerequisites.bff"     ; macOS
+#include "Unix/Linux/LinuxPrerequisites.bff"   ; Linux
+
+// Platform-Independent File Setup
+//-----------------------------------------------------------------------------
+
+; Use .cxx for source files
+.CompilerInputPattern = '*.cxx'
+
+// Compiler Flags
+//-----------------------------------------------------------------------------
+
+Print('$MsgPrefix$ Compiler Flags: $CompilerOptions$')
+
+// Complete Compiler
+//-----------------------------------------------------------------------------
+
+#include "CommonEnd.bff"
+
+// CommonLib Setup
+//-----------------------------------------------------------------------------
+
+; There is no "debug" library config, we just change the compiler flags
+; based on what features we are using
+Library( 'CommonLib' ) {}
+
+; 'fbuild' compiles based on whatever is set in the control panel
+Alias( 'all' )
+{
+    .Targets = { 'CommonLib' }
+}

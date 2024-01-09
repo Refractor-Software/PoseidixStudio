@@ -46,3 +46,6 @@
 # Build Tools folders
 Vendor
 /Vendor
+
+# FASTBuild files
+*.fdb

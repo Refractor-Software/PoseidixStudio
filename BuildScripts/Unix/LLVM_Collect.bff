@@ -1,0 +1,13 @@
+#if exists(LLVM)
+    #import LLVM
+    ; Set up the compiler and librarian/archiver
+    .Compiler           = '$LLVM$\bin\clang++.$AppExt$'
+    .Librarian          = '$LLVM$\bin\llvm-ar.$AppExt$'
+    .LibrarianOptions   = 'rc %2 %1'
+#else
+    .ErrMsg = 'LLVM (envar LLVM) not found. '
+            + 'See README for setup instructions.'
+    FatalErr( '$ErrMsg$' )
+#endif ; exists(LLVM)
+
+#include "LLVM_Compile_BaseFlags.bff"
