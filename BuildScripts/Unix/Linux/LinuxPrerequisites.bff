@@ -11,8 +11,9 @@
     .ObjExt         = 'o'
     ; todo: file extensions
 
-    .BinOut + '\Linux'
-    .ObjOut + '\Linux'
+    .Platform       = 'Linux'
+
+    #include '../../OutputSettings.bff'
 
     #include "../LLVM_Collect.bff"
 #endif ; __LINUX__

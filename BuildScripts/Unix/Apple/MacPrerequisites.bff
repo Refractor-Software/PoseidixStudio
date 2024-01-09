@@ -9,8 +9,9 @@
 
     ; todo: file extensions
 
-    .BinOut + '\macOS'
-    .ObjOut + '\macOS'
+    .Platform       = 'macOS'
+
+    #include '../../OutputSettings.bff'
 
     ; very temporary, Apple Clang will need its own solution later
     #include "../LLVM_Collect.bff"

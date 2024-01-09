@@ -11,8 +11,9 @@
     .ObjExt         = 'obj'
     .AppExt         = 'exe'
 
-    .BinOut         = '\Win32'
-    .ObjOut         = '\Win32'
+    .Platform       = 'Win32'
+
+    #include '../../OutputSettings.bff'
 
     #include "../MSVC_Collect.bff"
 #endif

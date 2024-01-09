@@ -16,16 +16,13 @@
 .CompilerInputPath      = '$CodePath$\$LibPath$\Source'
 
 ; Path where compiled object files will be placed
-.CompilerOutputPath     = '$CodePath$\$LibPath$\Intermediate'
+.CompilerOutputPath     = '$CodePath$\$LibPath$\Bin\'
 #if __BUILD_DEBUG__
 .CompilerOutputPath     + '\Debug'
 #endif ; __BUILD_DEBUG__
 
 ; Path where compiled library will be placed
-.LibrarianOutputPath    = '$CodePath$\$LibPath$\Bin'
-#if __BUILD_DEBUG__
-.LibrarianOutputPath    + '\Debug'
-#endif ; __BUILD_DEBUG__
+.LibrarianOutputPath    = .CompilerOutputPath
 
 ; Version of the library to build
 .BuildVer               = 'Dist'

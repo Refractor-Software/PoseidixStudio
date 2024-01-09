@@ -5,18 +5,8 @@ setlocal EnableDelayedExpansion
 
 set EchoPrefix=[CommonLib]
 set BinDirName=Bin
-set ObjDirName=Intermediate
-set ClrObjMsg=Intermediate objects cleared.
 set ClrBinMsg=Binaries cleared.
-set NoObjMsg=No intermediate objects folder [%ObjDirName%] exists. Presumably nothing to delete.
 set NoBinMsg=No binaries folder [%BinDirName%] exists. Presumably nothing to delete.
-
-if exist %ObjDirName% (
-    rmdir /s /q %ObjDirName%
-    echo %EchoPrefix% %ClrObjMsg%
-) else (
-    echo %EchoPrefix% %NoObjMsg%
-)
 
 if exist %BinDirName% (
     rmdir /s /q %BinDirName%
