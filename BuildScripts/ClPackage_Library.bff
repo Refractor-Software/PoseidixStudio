@@ -35,12 +35,7 @@ Using( .ControlPanel )
 
 ; Centralized error message variable (since execution won't last beyond
 ; an error anyway).
-.ErrMsg     = ''
-; Function which prints the error message and halts execution.
-function FatalErr( .InMessage )
-{
-    Error('[CommonLib] FATAL ERROR: $InMessage$')
-}
+.ErrMsg         = ''
 
 ; Inform the user that the build has started.
 Print('$MsgPrefix$ Starting build.')

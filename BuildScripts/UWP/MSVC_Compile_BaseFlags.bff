@@ -9,6 +9,7 @@
                     + ' /W3'				                ; Warning level 3 (4 is too pedantic)
                     + ' /WX'				                ; Warnings are errors
                     + ' /nologo'		                    ; No compiler spam
+                    + ' /std:c++$CxxStandard$'              ; Sets the C++ standard
                     + ' /I"$CodePath$\$LibPath$\include"'   ; Base include path
                     + ' /I"$VULKAN_SDK$\Include"'           ; Vulkan include path
                     + ' /I"$MSVC$\include"'                 ; MSVC libstdc++ include path

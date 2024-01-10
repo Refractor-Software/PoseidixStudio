@@ -32,11 +32,11 @@ namespace commonlib::math {
                 float y;
                 float z;
                 float w;
-            }
+            };
 
             float rg[4];
-        }
-    }
+        };
+    };
 
     
 
