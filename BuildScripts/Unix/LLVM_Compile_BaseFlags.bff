@@ -8,7 +8,7 @@
                     + ' -std=c++$CxxStandard$'  ; Sets the C++ standard
                     + ' -ffast-math'            ; Fast floating-point math
                     + ' -fno-exceptions'        ; Disable exceptions
-                    + ' -IInclude'              ; Base include path
+                    + ' -Iinclude'              ; Base include path
                     + ' -I$VULKAN_SDK$\Include' ; Vulkan include path
 #if __BUILD_DEBUG__
                     + ' -D_DEBUG'               ; Defines the no-debug macro

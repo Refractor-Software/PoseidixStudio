@@ -16,7 +16,7 @@
 .CompilerInputPath      = '$CodePath$\$LibPath$\Source'
 
 ; Path where compiled object files will be placed
-.CompilerOutputPath     = '$CodePath$\$LibPath$\Bin\'
+.CompilerOutputPath     = '$CodePath$\$LibPath$\bin\'
 #if __BUILD_DEBUG__
 .CompilerOutputPath     + '\Debug'
 #endif ; __BUILD_DEBUG__
