@@ -7,11 +7,9 @@
     .bBuildWindows  = true
     #define __USE_MSVC__
 
-    .LibExt         = 'lib'
-    .ObjExt         = 'obj'
-    .AppExt         = 'exe'
+    #include "WindowsExtensions.bff"
 
-    .Platform       = 'Win32'
+    .Platform       = 'win32'
 
     #include '../../OutputSettings.bff'
 

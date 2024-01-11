@@ -7,9 +7,7 @@
     .bBuildLinux    = true
     #define __USE_CLANG__
 
-    .LibExt         = 'a'
-    .ObjExt         = 'o'
-    ; todo: file extensions
+    #include "LinuxExtensions.bff"
 
     .Platform       = 'Linux'
 

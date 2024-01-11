@@ -1,0 +1,8 @@
+#once
+
+// Build Platforms
+//-----------------------------------------------------------------------------
+
+#include "UWP/Win32/WindowsPrerequisites.bff"  ; Windows
+#include "Unix/Apple/MacPrerequisites.bff"     ; macOS
+#include "Unix/Linux/LinuxPrerequisites.bff"   ; Linux

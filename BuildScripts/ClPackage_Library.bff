@@ -12,16 +12,16 @@
 //     .CxxStandard    = 20
 //
 //     ; Whether to build a debug or distribution library.
-//     .BuildDebugLib  = true
+//     .DebugBuild  = true
 //
 //     ; The architecture to build for (x64, x86, or ARM).
-//     .BuildArch      = 'x64'
+//     .Arch      = 'x64'
 //
 //     ; Name of the library being built
-//     .LibName        = 'CommonLib'
+//     .PkgName        = 'CommonLib'
 //
 //     ; Utility string for when we print build info or errors.
-//     .MsgPrefix      = '[$LibName$]'
+//     .MsgPrefix      = '[$PkgName$]'
 // ]
 //
 // Once this is set up, include this file and you're good to go.
@@ -31,7 +31,7 @@
 Using( .ControlPanel )
 
 ; Utility string for when we print build info or errors.
-.MsgPrefix      = '[$LibName$]'
+.MsgPrefix      = '[$PkgName$]'
 
 ; Centralized error message variable (since execution won't last beyond
 ; an error anyway).
@@ -40,7 +40,7 @@ Using( .ControlPanel )
 ; Inform the user that the build has started.
 Print('$MsgPrefix$ Starting build.')
 
-If( .BuildDebugLib )
+If( .DebugBuild )
 {
 
 #define __BUILD_DEBUG__
@@ -48,16 +48,16 @@ If( .BuildDebugLib )
 }
 
 ; If true tell the user we're building for debug.
-If( .BuildDebugLib )
+If( .DebugBuild )
 {
-    Print('$MsgPrefix$ Building debug library.')
-} ; If( .BuildDebugLib )
+    Print('$MsgPrefix$ Building debug product.')
+} ; If( .DebugBuild )
 
 ; Otherwise tell the user we're building for distribution.
-If( !.BuildDebugLib )
+If( !.DebugBuild )
 {
-    Print('$MsgPrefix$ Building distribution library.')
-} ; If( !.BuildDebugLib )
+    Print('$MsgPrefix$ Building distribution product.')
+} ; If( !.DebugBuild )
 
 ; Print some info about where to edit the build mode.
 .CfgInfoMsg     = 'Use the .ControlPanel struct at the '

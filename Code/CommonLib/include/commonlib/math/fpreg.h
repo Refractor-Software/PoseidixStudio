@@ -38,8 +38,6 @@ namespace commonlib::math {
         };
     };
 
-    
-
 } // namespace commonlib::math
 
 #endif // __COMMONLIB_FPREG_HEAD__

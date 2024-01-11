@@ -1,2 +1,8 @@
-.CompilerOutputPath     + '\$Platform$\Intermediate'
+; Compiled package outputs
+.LibrarianOutputPath    = .CompilerOutputPath
+.LibrarianOutput        = '$LibrarianOutputPath$\$PkgName$-$BuildVer$.$LibExt$'
+.LinkerOutput           = '$LibrarianOutputPath$\$PkgName$-$BuildVer$.$AppExt$'
+
+; Finish path setup
+.CompilerOutputPath     + '\$Platform$\$ObjPath$'
 .LibrarianOutputPath    + '\$Platform$'

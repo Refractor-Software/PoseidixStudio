@@ -7,7 +7,7 @@
     .bBuildMac      = true
     #define __USE_CLANG__
 
-    ; todo: file extensions
+    #include "MacExtensions.bff"
 
     .Platform       = 'macOS'
 

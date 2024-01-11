@@ -1,0 +1,9 @@
+#once
+
+ObjectList( '$PkgName$-Lib' ) {}
+
+Executable( '$PkgName$' )
+{
+    .Libraries  = '$PkgName$-Lib'
+    .LinkerOutput = '$LibrarianOutputPath$\$PkgName$.$AppExt$'
+}

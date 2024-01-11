@@ -3,9 +3,10 @@
 #if exists(MSVC)
     #import MSVC
     ; Set up the compiler and librarian/archiver
-    .Compiler           = '$MSVC$\bin\Host$BuildArch$\$BuildArch$\cl.exe'
-    .Librarian          = '$MSVC$\bin\Host$BuildArch$\$BuildArch$\lib.exe'
-    .LibrarianOptions	= '/OUT:%2 %1 ' ; Specify libraries manually
+    .__MsvcBinPath      = '$MSVC$\bin\Host$Arch$\$Arch$'
+    .Compiler           = '$__MsvcBinPath$\cl.exe'
+    .Librarian          = '$__MsvcBinPath$\lib.exe'
+    .Linker             = '$__MsvcBinPath$\link.exe'
 #else
     .ErrMsg = 'MSVC (envar MSVC) not found. '
             + 'See README for setup instructions.'
@@ -22,11 +23,11 @@
 
 #if exists(WINSDK_LIB)
     #import WINSDK_LIB
-    .WINSDK_LIB_FULL = '$WINSDK_LIB$\$BuildArch$'
+    .WINSDK_LIB_FULL = '$WINSDK_LIB$\$Arch$'
 #else
     .ErrMsg = 'Windows SDK libaries (envar WINSDK_LIB) not found. '
             + 'See README for setup instructions.'
     Error( '$MsgPrefix$ FATAL ERROR: $ErrMsg$' )
 #endif ; exists(WINSDK_LIB)
 
-#include "MSVC_Compile_BaseFlags.bff"
+#include "MSVC_Flags.bff"

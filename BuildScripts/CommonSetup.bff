@@ -1,0 +1,85 @@
+#once
+
+// FASTBuild configuration for compiling any program under this repo
+//-----------------------------------------------------------------------------
+
+// Control Panel is expected to exist in parent file.
+// It should follow the format as shown:
+//
+// .ControlPanel =
+// [
+//     ; Sets the C++ standard version
+//     .CxxStandard    = 20
+//
+//     ; Whether to build a debug or distribution library.
+//     .DebugBuild     = true
+//
+//     ; The architecture to build for (x64, x86, or ARM).
+//     .Arch           = 'x64'
+//
+//     ; Name of the package (library/executable) being built
+//     .PkgName        = 'Libname'
+//
+//     ; Specify that this is a library and not an executable
+//     .IsLib          = true
+// ]
+//
+// Once this is set up, include this file and you're good to go.
+//-----------------------------------------------------------------------------
+
+Using( .ControlPanel )
+.MsgPrefix      = '[$PkgName$]'
+Print('$MsgPrefix$ Starting build.')
+
+If( .DebugBuild )
+{
+#if __BUILD_DEBUG__
+    ; macro already defined
+#else
+    #define __BUILD_DEBUG__
+    Print('$MsgPrefix$ Building debug package.')
+#endif
+}
+
+If( !.DebugBuild )
+{
+#if __BUILD_DEBUG__
+    #undef __BUILD_DEBUG__
+    Print('$MsgPrefix$ Building distribution package.')
+#endif
+}
+
+If( .IsLib )
+{
+#if __BUILD_LIB__
+    ; macro already defined
+#else
+    #define __BUILD_LIB__
+    Print('$MsgPrefix$ Building library.')
+#endif
+}
+
+If( !.IsLib )
+{
+#if __BUILD_LIB__
+    #undef __BUILD_LIB__
+    Print('$MsgPrefix$ Building executable.')
+#endif
+}
+
+// Begin Setup
+//-----------------------------------------------------------------------------
+
+#include "CommonPrerequisites.bff"  ; Vulkan SDK, etc
+
+// Path Setup
+//-----------------------------------------------------------------------------
+
+#include "InitializePaths.bff"      ; Compiler/librarian/linker inputs/outputs
+.CompilerInputPattern = '*.cxx'     ; Use .cxx for source files
+
+// Platform, Compiler, Librarian, Linker Setup
+//-------------------------------------------------------------------------
+#include "PlatformSetup.bff"
+
+Print('$MsgPrefix$ Compiler Flags: $CompilerOptions$')

@@ -41,4 +41,6 @@ Path: **`%INSTALL_PATH%\VC\Tools\MSVC\%INSTALLED_VER%`**
 
 ### For Windows SDK
 
+Lib Path: **%INSTALL_PATH%\%VER%\Lib
+
 (work in progress)

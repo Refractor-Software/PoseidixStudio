@@ -7,25 +7,3 @@
             + 'See README for setup instructions.'
     Error( '$MsgPrefix$ FATAL ERROR: $ErrMsg$' )
 #endif ; exists(VULKAN_SDK)
-
-; Get the real source path, otherwise we won't be able to find
-; the code files
-.CodePath               = 'Code'
-
-; Path where source files are located
-.CompilerInputPath      = '$CodePath$\$LibPath$\Source'
-
-; Path where compiled object files will be placed
-.CompilerOutputPath     = '$CodePath$\$LibPath$\bin\'
-#if __BUILD_DEBUG__
-.CompilerOutputPath     + '\Debug'
-#endif ; __BUILD_DEBUG__
-
-; Path where compiled library will be placed
-.LibrarianOutputPath    = .CompilerOutputPath
-
-; Version of the library to build
-.BuildVer               = 'Dist'
-#if __BUILD_DEBUG__
-.BuildVer               = 'Debug'
-#endif ; __BUILD_DEBUG__
