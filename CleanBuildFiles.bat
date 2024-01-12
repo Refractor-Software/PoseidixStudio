@@ -1,9 +1,8 @@
 @echo off
 rem Delete existing binaries, forces a full rebuild
-rem The extra 'cd' commands are for debugging to ensure we're navigating correctly.
 setlocal EnableDelayedExpansion
 
-set EchoPrefix=[CommonLib]
+set EchoPrefix=[Binaries Clearer]
 set BinDirName=bin
 set ClrBinMsg=Binaries cleared.
 set NoBinMsg=No binaries folder [%BinDirName%] exists. Presumably nothing to delete.
