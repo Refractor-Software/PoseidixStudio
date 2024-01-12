@@ -99,12 +99,12 @@
     .WinSdkLibUm    = '$WinSdkLibBase$\um\$BuildArch$'
     .WinSdkLibUcrtE = '$WinSdkLibBase$\ucrt-enclave\$BuildArch$'
 
-    .CmpFlags       = ' /c %1'				                ; Only compile, don't link
+    .CmpFlags       = ' /nologo'		                    ; No compiler spam
+                    + ' /c %1'				                ; Only compile, don't link
                     + ' /Fo"%2"'		                    ; Output file
                     + ' /O2'                                ; Optimize for speed over size
                     + ' /W3'				                ; Warning level 3 (4 is too pedantic)
                     + ' /WX'				                ; Warnings are errors
-                    + ' /nologo'		                    ; No compiler spam
                     + ' /std:c++$CxxStandard$'              ; Sets the C++ standard
                     + ' /I"$VkIncPath$"'                    ; Vulkan include path
                     + ' /I"$VsIncPath$"'                    ; libstdc++ include path
@@ -135,7 +135,6 @@
 Compiler( 'Platform-Compiler' )
 {
 #if __WINDOWS__
-
     .Executable     =   '$VsBinPath$\cl.exe'
     .ExtraFiles     =   {
                         '$VsBinPath$\c1.dll'
@@ -155,15 +154,27 @@ Compiler( 'Platform-Compiler' )
                         '$VsBinPath$\1033\clui.dll',
                         '$VsBinPath$\1033\mspft140ui.dll'
                         }
-
 #endif ; __WINDOWS__
 }
 
+.Compiler           = 'Platform-Compiler'
+
+.LibrarianOptions   = ' /nologo'
+                    + ' /out:"%2"'
+                    + ' "%1"'
+                    + ' $LibPaths$'
+
+.LinkerOptions      = ' /nologo'
+                    + ' /out:"%2"'
+                    + ' "%1"'
+                    + ' /wx'
+                    + ' $LibPaths$'
+
+.CommonLibBase      = 'Code\CommonLib'
+.GameEditorBase     = 'Code\GameEngine\Editor'
+
 Library( 'CommonLib' )
 {
-    .CommonLibBase      = 'Code\CommonLib'
-
-    .Compiler           = 'Platform-Compiler'
     .CompilerOptions    = .CmpFlags
 
     .CompilerInputPath  = '$CommonLibBase$\$PkgSrc$'
@@ -171,11 +182,35 @@ Library( 'CommonLib' )
 
     .CompilerOptions    + ' /I"$CommonLibBase$\$PkgInc$"'   ; include path
 
-    .LibrarianOptions   = ' /nologo'
-                        + ' /out:"%2"'
-                        + ' "%1"'
-                        + ' $LibPaths$'
-                        + ' kernel32.lib'
+    .LibrarianOptions   + ' kernel32.lib'
                         + ' vulkan-1.lib'
+
     .LibrarianOutput    = '$CommonLibBase$\$PkgBin$\CommonLib-$BuildVer$.$LibExt$'
+}
+
+ObjectList( 'GameEditor-Lib' )
+{
+    .CompilerOptions        = .CmpFlags
+
+    .CompilerInputPath      = '$GameEditorBase$\$PkgSrc$'
+    .CompilerOutputPath     = '$GameEditorBase$\$PkgObj$'
+
+    .CompilerOptions        + ' /I"$GameEditorBase$\$PkgInc$"'  ; editor include
+                            + ' /I"$CommonLibBase$\$PkgInc$"'   ; commonlib include
+
+    .PreBuildDependencies   = 'CommonLib-$BuildVer$.$LibExt$'
+}
+
+Executable( 'GameEditor' )
+{
+    .GameEditorBase     = 'Code\GameEngine\Editor'
+
+    .Libraries          = 'GameEditor-Lib'
+
+    .LinkerOutput       = '$GameEditorBase$\$PkgBin$\GameEditor-$BuildVer$.$AppExt$'
+    .LinkerOptions      + ' /libpath:"$CommonLibBase$\$PkgBin$"'  ; depends on commonlib
+                        + ' CommonLib-$BuildVer$.$LibExt$'
+    #if __BUILD_DEBUG__
+                        + ' /debug'
+    #endif ; __BUILD_DEBUG__
 }
