@@ -2,7 +2,7 @@
 rem Delete existing binaries, forces a full rebuild
 setlocal EnableDelayedExpansion
 
-set EchoPrefix=[Binaries Clearer]
+set EchoPrefix=[Build Files Cleaner]
 set BinDirName=bin
 set ClrBinMsg=Binaries cleared.
 set NoBinMsg=No binaries folder [%BinDirName%] exists. Presumably nothing to delete.
