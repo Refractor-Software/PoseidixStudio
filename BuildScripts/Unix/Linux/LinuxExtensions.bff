@@ -1,7 +1,0 @@
-#once
-
-#if __LINUX__
-    .LibExt         = 'a'
-    .ObjExt         = 'o'
-    ; todo: file extensions
-#endif ; __LINUX__

@@ -1,7 +1,0 @@
-#once
-
-#if __WINDOWS__
-    .LibExt         = 'lib'
-    .ObjExt         = 'obj'
-    .AppExt         = 'exe'
-#endif

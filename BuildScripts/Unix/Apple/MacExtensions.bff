@@ -1,5 +1,0 @@
-#once
-
-#if __OSX__
-    ; todo: file extensions
-#endif ; __OSX__

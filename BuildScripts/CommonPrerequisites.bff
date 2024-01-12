@@ -1,9 +1,0 @@
-#once
-
-#if exists(VULKAN_SDK)
-    #import VULKAN_SDK
-#else
-    .ErrMsg = 'Vulkan SDK (envar VULKAN_SDK) not found. '
-            + 'See README for setup instructions.'
-    Error( '$MsgPrefix$ FATAL ERROR: $ErrMsg$' )
-#endif ; exists(VULKAN_SDK)
