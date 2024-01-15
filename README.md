@@ -1,12 +1,14 @@
 # Refractor Studio
 
-**Refractor Studio** is a software suite containing several workstation programs and libaries, initially created to develop video games but usable in many high-performance industries.
+**Refractor Studio** is a software suite containing several workstation programs and libaries, initially created to develop video games but usable in many high-performance industries. It has few external dependencies.
 
 ## Major Libraries
 - **CommonLib** - High-performance C++ library featuring everything you need to build your next GUI or rendered application. Features vector math, a native-looking UI library, and interfaces for input, audio, rendering, memory, and the platform itself.
+    - Dependencies: **GLM, Vulkan**
 
 ## Major Programs
-- **Lycan Engine** - High-performance 3D data-oriented game engine. Uses CommonLib for most of its features.
+- **Lycan Engine** - High-performance 3D data-oriented game engine. Targets over 160 FPS on ninth-generation consoles.
+    - Dependencies: **CommonLib**
 
 # Building Studio
 Currently, Studio depends quite a bit on the user's environment to function correctly. It's not all plug-and-play, so make sure you read the installation instructions **with madman levels of care and do not mess up ONE SINGLE STEP of the process** for your given platform - otherwise, your code might not compile.
