@@ -1,17 +1,22 @@
-# Poseidix Studio
+# Refractor Studio
 
-**Poseidix Studio** is a software suite containing several workstation programs and libaries, initially created to develop video games but usable in many high-performance industries.
+**Refractor Studio** is a software suite containing several workstation programs and libaries, initially created to develop video games but usable in many high-performance industries.
+
+## Major Libraries
+- **CommonLib** - High-performance C++ library featuring everything you need to build your next GUI or rendered application. Features vector math, a native-looking UI library, and interfaces for input, audio, rendering, memory, and the platform itself.
 
 ## Major Programs
-- **Poseidix Engine** - High-performance 3D data-oriented game engine. Targets 160 FPS or higher on ninth-generation consoles.
+- **Lycan Engine** - High-performance 3D data-oriented game engine. Uses CommonLib for most of its features.
 
-# Building Poseidix Studio
-Currently, Poseidix Studio depends quite a bit on the user's environment to function correctly. It's not all plug-and-play, so make sure you read the installation instructions **with madman levels of care and do not mess up ONE SINGLE STEP of the process** for your given platform - otherwise, your code might not compile.
+# Building Studio
+Currently, Studio depends quite a bit on the user's environment to function correctly. It's not all plug-and-play, so make sure you read the installation instructions **with madman levels of care and do not mess up ONE SINGLE STEP of the process** for your given platform - otherwise, your code might not compile.
 
 For build instructions, you check the Wiki and follow the Setup instructions for your platforms.
 
 ## Windows
 **Before you blindly start clicking through installer instructions, make sure you read these notes to know exactly WHERE to install everything. The build system cannot magically find your compiler installation, especially if you pick some crazy wonky installation location, so installing in the right spot is critical to making sure that it can find everything.**
+
+On Windows, the toolchain of choice is **clang++** with **MSVC includes and libraries**. This is because Clang has better codegen than MSVC, and we have the option to use it on Windows. It can, for example, flatten a for-loop of floats down to a series of vector operations (and AVX vector operations if desired).
 
 ### Installing tools
 
