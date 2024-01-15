@@ -16,21 +16,25 @@
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 /// USA
 
-#ifndef __COMMONLIB_FLT_HEAD__
-#define __COMMONLIB_FLT_HEAD__
+/// @brief For the time being, CommonLib uses GLM (Graphics Library Math),
+/// which can be installed with Vulkan. This is a temporary solution until
+/// CommonLib decides to implement its own math library at a later date.
 
-namespace commonlib {
+#ifndef __COMMONLIB_GLM_FWD_HEAD__
+#define __COMMONLIB_GLM_FWD_HEAD__
 
-    /// @brief Floating-point number. 32 bits.
-    typedef float   f32;
+// forward-declare GLM namespace
+namespace glm {}
 
-    static_assert(sizeof(f32) == 4);
+namespace commonlib
+{
+namespace math
+{
+namespace glm
+{
 
-    /// @brief Floating-point number. 64 bits.
-    typedef double  f64;
-
-    static_assert(sizeof(f64) == 8);
-
+} // namespace glm
+} // namespace math
 } // namespace commonlib
 
-#endif // __COMMONLIB_FLT_HEAD__
+#endif // __COMMONLIB_GLM_FWD_HEAD__

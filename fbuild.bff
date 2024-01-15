@@ -270,7 +270,7 @@
 #endif ; __TOOL_CLANG__
     + ' $IncludePaths$'             ; Include paths up to this point
 #if      __TOOL_MSVC__
-    + ' -EHsc'                      ; Exception stack unwinding
+    + ' -EHsc'                      ; Exception stack unwinding (todo: disable exceptions)
     + ' -Qspectre'                  ; Disable spectre mitigations (build issues)
 #endif ; __TOOL_MSVC__
 #if      __BUILD_DEBUG__
@@ -297,11 +297,10 @@
     + ' -nologo'
     + ' -out:"%2"'
     + ' "%1"'
-    + ' $LnkPaths$'
+    + ' $LnkPaths$'         ; MSVC uses same args as link
 #endif ; __TOOL_MSVC__
 #if      __TOOL_CLANG__
     + ' rc %2 %1'
-    + ' $LibPaths$'
 #endif ; __TOOL_CLANG__
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +311,9 @@
 ; Due to MSVC link.exe and LLVM lld-link.exe using the same flags,
 ; we can use these regardless of if we build with MSVC or LLVM
 #if      __PLATFORM_REQUIRES_UWP__
+#if      __TOOL_MSVC__
     + ' -nologo'
+#endif ; __TOOL_MSVC__
     + ' "%1"'
     + ' -out:"%2"'
     + ' $LnkPaths$'
@@ -323,7 +324,7 @@
 #else
     + ' msvcrt.lib'
 #endif ; __BUILD_DEBUG
-    + ' /wx'
+    + ' -wx'
 #endif ; __PLATFORM_REQUIRES_UWP__
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,12 +344,14 @@ Library( 'CommonLib' )
 
     .CompilerOptions    + ' $IncFlg$"$CommonLibInc$"'   ; include path
 
+    #if      !__TOOL_CLANG__
     .LibrarianOptions
         + ''
     #if      __PLATFORM_REQUIRES_UWP__
         + ' $LibFlg$kernel32.lib'
     #endif ; __PLATFORM_REQUIRES_UWP__
         + ' $LibFlg$vulkan-1.lib'
+    #endif ; __TOOL_CLANG__
 
     .LibrarianOutput    = '$CommonLibBase$\$PkgBin$\CommonLib-$BuildVer$.$LibExt$'
 }
@@ -383,7 +386,7 @@ Executable( 'GameEditor' )
     ; On Windows, lld-link uses the same options as MSVC link.exe
     #if      __PLATFORM_REQUIRES_UWP__
     .LinkerOptions
-        + ' $LptFlg$"$CommonLibBin$"'  ; depends on commonlib
+        + ' $LnkFlg$"$CommonLibBin$"'  ; depends on commonlib
         + ' $CommonLibLink$'
     #if __BUILD_DEBUG__
         + ' /debug'

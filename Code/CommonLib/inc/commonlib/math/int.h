@@ -19,27 +19,39 @@
 #ifndef __COMMONLIB_INT_HEAD__
 #define __COMMONLIB_INT_HEAD__
 
-#include <cstdint>
+namespace commonlib
+{
+    /// @brief Signed integer. 8 bits.
+    typedef unsigned char       s8;
+    /// @brief Unsigned integer. 8 bits.
+    typedef unsigned char       u8;
 
-namespace commonlib {
+    static_assert(sizeof(s8) == 1);
+    static_assert(sizeof(u8) == 1);
 
-    /// @brief 8-bit unsigned integer.
-    using u8    = std::uint8_t;
-    /// @brief 16-bit unsigned integer.
-    using u16   = std::uint16_t;
-    /// @brief 32-bit unsigned integer.
-    using u32   = std::uint32_t;
-    /// @brief 64-bit unsigned integer.
-    using u64   = std::uint64_t;
+    /// @brief Signed integer. 16 bits.
+    typedef unsigned short      s16;
+    /// @brief Unsigned integer. 16 bits.
+    typedef unsigned short      u16;
 
-    /// @brief 8-bit signed integer.
-    using s8    = std::int8_t;
-    /// @brief 16-bit signed integer.
-    using s16   = std::int16_t;
-    /// @brief 32-bit signed integer.
-    using s32   = std::int32_t;
-    /// @brief 64-bit signed integer.
-    using s64   = std::int64_t;
+    static_assert(sizeof(s16) == 2);
+    static_assert(sizeof(u16) == 2);
+
+    /// @brief Signed integer. 32 bits.
+    typedef signed int          s32;
+    /// @brief Unsigned integer. 32 bits.
+    typedef unsigned int        u32;
+
+    static_assert(sizeof(s32) == 4);
+    static_assert(sizeof(u32) == 4);
+
+    /// @brief Signed integer. 64 bits.
+    typedef signed long long    s64;
+    /// @brief Unsigned integer. 64 bits.
+    typedef unsigned long long  u64;
+
+    static_assert(sizeof(s64) == 8);
+    static_assert(sizeof(u64) == 8);
 
 } // namespace commonlib
 

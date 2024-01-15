@@ -19,6 +19,8 @@
 #ifndef __COMMONLIB_FPREG_HEAD__
 #define __COMMONLIB_FPREG_HEAD__
 
+#include <commonlib\math\flt.h>
+
 namespace commonlib::math {
 
     /// @brief 128-bit floating-point register.
@@ -28,15 +30,15 @@ namespace commonlib::math {
         {
             struct
             {
-                float x;
-                float y;
-                float z;
-                float w;
+                f32 x;
+                f32 y;
+                f32 z;
+                f32 w;
             };
 
-            float rg[4];
+            f32 rg[4];
         };
-    };
+    }; // 16b
 
 } // namespace commonlib::math
 

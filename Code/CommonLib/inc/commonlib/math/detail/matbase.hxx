@@ -16,21 +16,19 @@
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 /// USA
 
-#ifndef __COMMONLIB_FLT_HEAD__
-#define __COMMONLIB_FLT_HEAD__
+#ifndef     __COMMONLIB_MATH_MATBASE_HEAD__
+#define     __COMMONLIB_MATH_MATBASE_HEAD__
 
-namespace commonlib {
+#include <commonlib/math/detail/config.hxx>
 
-    /// @brief Floating-point number. 32 bits.
-    typedef float   f32;
+namespace commonlib
+{
+namespace math
+{
+    template <length_t col_v, length_t row_v, typename val_t> struct mat;
+}
+// namespace math
+}
+// namespace commonlib
 
-    static_assert(sizeof(f32) == 4);
-
-    /// @brief Floating-point number. 64 bits.
-    typedef double  f64;
-
-    static_assert(sizeof(f64) == 8);
-
-} // namespace commonlib
-
-#endif // __COMMONLIB_FLT_HEAD__
+#endif //   __COMMONLIB_MATH_MATBASE_HEAD__

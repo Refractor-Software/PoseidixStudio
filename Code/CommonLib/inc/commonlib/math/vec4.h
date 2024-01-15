@@ -16,21 +16,18 @@
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 /// USA
 
-#ifndef __COMMONLIB_FLT_HEAD__
-#define __COMMONLIB_FLT_HEAD__
+#ifndef __COMMONLIB_MATH_VEC4F_HEAD__
+#define __COMMONLIB_MATH_VEC4F_HEAD__
 
-namespace commonlib {
+#include <glm/detail/type_vec4.hpp>
+#include <commonlib/math/flt.h>
 
-    /// @brief Floating-point number. 32 bits.
-    typedef float   f32;
-
-    static_assert(sizeof(f32) == 4);
-
-    /// @brief Floating-point number. 64 bits.
-    typedef double  f64;
-
-    static_assert(sizeof(f64) == 8);
-
+namespace commonlib
+{
+namespace math
+{
+    typedef glm::vec<4, f32, glm::packed_mediump>   vec4;
+} // namespace math
 } // namespace commonlib
 
-#endif // __COMMONLIB_FLT_HEAD__
+#endif // __COMMONLIB_GLM_FWD_HEAD__

@@ -16,21 +16,14 @@
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 /// USA
 
-#ifndef __COMMONLIB_FLT_HEAD__
-#define __COMMONLIB_FLT_HEAD__
+#ifndef     __COMMONLIB_MATH_GFX_CONFIG_HEAD__
+#define     __COMMONLIB_MATH_GFX_CONFIG_HEAD__
 
-namespace commonlib {
+#include <commonlib/math/int.h>
 
-    /// @brief Floating-point number. 32 bits.
-    typedef float   f32;
+namespace commonlib
+{
+    typedef s64 length_t;
+}
 
-    static_assert(sizeof(f32) == 4);
-
-    /// @brief Floating-point number. 64 bits.
-    typedef double  f64;
-
-    static_assert(sizeof(f64) == 8);
-
-} // namespace commonlib
-
-#endif // __COMMONLIB_FLT_HEAD__
+#endif //   __COMMONLIB_MATH_GFX_CONFIG_HEAD__
