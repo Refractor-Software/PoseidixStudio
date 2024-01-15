@@ -1,82 +1,113 @@
 #once
 
-; Change stuff here (todo: allow command line to change this)
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Initial Configuration
 
 .HostArch       = 'x64'
 .BuildArch      = 'x64'
 .CxxStandard    = '20'
 
-; Internal details
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Debug vs distribution build
 
-#if __BUILD_DEBUG__
+; Uncomment this to enable debug builds.
+; #define __BUILD_DEBUG__
+
+#if      __BUILD_DEBUG__
     .BuildVer = 'debug'
 #else
     .BuildVer = 'dist'
-#endif
+#endif ; __BUILD_DEBUG__
 
-#if exists(VULKAN_SDK)
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Compiler flag setup
+
+.IncFlg         = '-I'
+.LibFlg         = '-l'
+.LptFlg         = '-L'
+.LnkFlg         = .LptFlg
+
+.IncludePaths   = ''
+.LibPaths       = ''
+.LnkPaths       = ''
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Vulkan SDK setup
+
+#if      exists(VULKAN_SDK)
     #import VULKAN_SDK
 #else
     Error('Missing required envar "VULKAN_SDK"')
-#endif
+#endif ; exists(VULKAN_SDK)
 
-.VkBasePath = '$VULKAN_SDK$'
+.VkBasePath     = '$VULKAN_SDK$'
 
-.VkIncPath  = '$VkBasePath$\Include'
-.VkLibPath  = '$VkBasePath$\Lib'
-.VkBinPath  = '$VkBasePath$\Bin'
+.VkIncPath      = '$VkBasePath$\Include'
+.VkLibPath      = '$VkBasePath$\Lib'
+.VkBinPath      = '$VkBasePath$\Bin'
 
-#if __WINDOWS__
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Windows initialization
+
+#if      __WINDOWS__
+
+    ////////////////////////////////////////////////////////////
+    // Basic extensions
+
     .BuildPlat  = 'win32'
     .LibExt     = 'lib'
     .ObjExt     = 'obj'
     .AppExt     = 'exe'
+
+    ; Use Clang to compile code (better codegen than MSVC)
+    #define __TOOL_CLANG__
+    ; Windows requires MSVC and UWP content (inc/lib/etc)
+    #define __PLATFORM_REQUIRES_UWP__
+
 #endif ; __WINDOWS__
 
-#if __OSX__
-    .BuildPlat  = 'macOS'
-#endif ; __OSX__
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Universal Windows Platform (UWP) setup (Windows/Xbox)
 
-#if __LINUX__
-    .BuildPlat  = 'linux'
-    .LibExt     = 'a'
-    .ObjExt     = 'o'
-#endif ; __LINUX__
+#if      __PLATFORM_REQUIRES_UWP__
+    ////////////////////////////////////////////////////////////
+    // Required environment variables
 
-; all packages (libraries/programs) follow this template
-.PkgBin = 'bin\$BuildVer$\$BuildPlat$\$BuildArch$'
-.PkgObj = '$PkgBin$\intermediate'
-.PkgInc = 'inc'
-.PkgSrc = 'src'
-
-; we use .cxx around here
-.CompilerInputPattern = '*.cxx'
-
-; compiler setup for windows (msvc)
-#if __WINDOWS__
-    #if exists(VsPath)
+    #if      exists(VsPath)
         #import VsPath
     #else
         Error('Missing required envar "VsPath"')
     #endif ; exists(VsPath)
 
-    #if exists(VsVer)
+    #if      exists(VsVer)
         #import VsVer
     #else
         Error('Missing required envar "VsVer"')
     #endif ; exists(VsVer)
 
-    #if exists(WinSdkPath)
+    #if      exists(WinSdkPath)
         #import WinSdkPath
     #else
         Error('Missing required envar "WinSdkPath"')
     #endif ; exists(WinSdkPath)
 
-    #if exists(WinSdkVer)
+    #if      exists(WinSdkVer)
         #import WinSdkVer
     #else
         Error('Missing required envar "WinSdkVer"')
     #endif ; exists(WinSdkVer)
+
+    ////////////////////////////////////////////////////////////
+    // Global variable reassignments
+
+    .LnkFlg         = '-libpath:'
+
+    #if __TOOL_MSVC__
+    .LibFlg         = '' ; libs in MSVC have no "flag"
+    #endif
+
+    ////////////////////////////////////////////////////////////
+    // Utility variables
 
     .VsBasePath     = '$VsPath$\VC\Tools\MSVC\$VsVer$'
     .VsLibBasePath  = '$VsBasePath$\lib'
@@ -98,44 +129,33 @@
     .WinSdkLibUcrt  = '$WinSdkLibBase$\ucrt\$BuildArch$'
     .WinSdkLibUm    = '$WinSdkLibBase$\um\$BuildArch$'
     .WinSdkLibUcrtE = '$WinSdkLibBase$\ucrt-enclave\$BuildArch$'
+#endif ; __PLATFORM_REQUIRES_UWP__
 
-    .CmpFlags       = ' /nologo'		                    ; No compiler spam
-                    + ' /c %1'				                ; Only compile, don't link
-                    + ' /Fo"%2"'		                    ; Output file
-                    + ' /O2'                                ; Optimize for speed over size
-                    + ' /W3'				                ; Warning level 3 (4 is too pedantic)
-                    + ' /WX'				                ; Warnings are errors
-                    + ' /std:c++$CxxStandard$'              ; Sets the C++ standard
-                    + ' /I"$VkIncPath$"'                    ; Vulkan include path
-                    + ' /I"$VsIncPath$"'                    ; libstdc++ include path
-                    + ' /I"$WinSdkIncUm$"'                  ; Windows SDK include paths (UM)
-                    + ' /I"$WinSdkIncUcrt$"'                ; Windows SDK include paths (UCRT)
-                    + ' /EHsc'                              ; Exception stack unwinding
-                    + ' /Qspectre'                          ; Disable spectre mitigations
-    #if __BUILD_DEBUG__
-                    + ' /Z7'				                ; Debugging (.pdb)
-                    + ' /MTd'                               ; Multi-threaded static lib (debug)
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Windows setup
+
+#if      __WINDOWS__
+    ; While we could use MSVC by itself, Clang has better codegen,
+    ; which not even intrinsics with MSVC can match, so we use Clang
+    ; instead of MSVC on Windows
+    #if exists(LLVM)
+        #import LLVM
     #else
-                    + ' /MT'                                ; Multi-threaded static lib (dist)
-                    + ' /DNDEBUG'                           ; Defines the no-debug macro
-    #endif ; __BUILD_DEBUG
+        Error('Missing required envar "LLVM"')
+    #endif ; exists(LLVM)
 
-    .Librarian      = '$VsBinPath$\lib.exe'
-    .Linker         = '$VsBinPath$\link.exe'
+    .LLVMPath       =   '$LLVM$'
+    .LLVMBin        =   '$LLVMPath$\bin'
 
-    .LibPaths       = ' /libpath:"$VsLibPath$"'
-                    + ' /libpath:"$VsLibOCPath$"'
-                    + ' /libpath:"$WinSdkLibUcrt$"'
-                    + ' /libpath:"$WinSdkLibUm$"'
-                    + ' /libpath:"$WinSdkLibUcrtE$"'
-                    + ' /libpath:"$VkLibPath$"'
+    #if      __TOOL_MSVC__
+    .Compiler       =   '$VsBinPath$\cl.exe'
+    #endif ; __TOOL_MSVC__
 
-#endif ; __WINDOWS__
+    #if __TOOL_CLANG__
+    .Compiler       =   '$LLVMBin$\clang++.$AppExt$'
+    #endif ; __TOOL_CLANG__
 
-Compiler( 'Platform-Compiler' )
-{
-#if __WINDOWS__
-    .Executable     =   '$VsBinPath$\cl.exe'
+    #if      __TOOL_MSVC__
     .ExtraFiles     =   {
                         '$VsBinPath$\c1.dll'
                         '$VsBinPath$\c1xx.dll',
@@ -154,63 +174,228 @@ Compiler( 'Platform-Compiler' )
                         '$VsBinPath$\1033\clui.dll',
                         '$VsBinPath$\1033\mspft140ui.dll'
                         }
+    #endif ; __TOOL_MSVC__
+
+    ; Use MSVC-compatible LLVM tools (except llvm-lib, that seems broken)
+    .Librarian      = '$LLVMBin$\llvm-ar.exe'
+    .Linker         = '$LLVMBin$\lld-link.exe'
+
+    ////////////////////////////////////////////////////////////
+    // Assigning script variables
+
+    .IncludePaths   + ' $IncFlg$"$VsIncPath$"'
+                    + ' $IncFlg$"$WinSdkIncUm$"'
+                    + ' $IncFlg$"$WinSdkIncUcrt$"'
+                    + ' $IncFlg$"$VkIncPath$"'
+
+    ; For Clang we use this set of flags to get llvm-ar to work right
+    .LibPaths       + ' $LptFlg$"$VsLibPath$"'
+                    + ' $LptFlg$"$VsLibOCPath$"'
+                    + ' $LptFlg$"$WinSdkLibUcrt$"'
+                    + ' $LptFlg$"$WinSdkLibUm$"'
+                    + ' $LptFlg$"$WinSdkLibUcrtE$"'
+                    + ' $LptFlg$"$VkLibPath$"'
+
+    ; MSVC link.exe and LLVM lld-link use the same args
+    .LnkPaths       + ' $LnkFlg$"$VsLibPath$"'
+                    + ' $LnkFlg$"$VsLibOCPath$"'
+                    + ' $LnkFlg$"$WinSdkLibUcrt$"'
+                    + ' $LnkFlg$"$WinSdkLibUm$"'
+                    + ' $LnkFlg$"$WinSdkLibUcrtE$"'
+                    + ' $LnkFlg$"$VkLibPath$"'
 #endif ; __WINDOWS__
-}
 
-.Compiler           = 'Platform-Compiler'
+//////////////////////////////////////////////////////////////////////////////////////////////
+// macOS build setup
 
-.LibrarianOptions   = ' /nologo'
-                    + ' /out:"%2"'
-                    + ' "%1"'
-                    + ' $LibPaths$'
+#if __OSX__
+    .BuildPlat  = 'macOS'
+#endif ; __OSX__
 
-.LinkerOptions      = ' /nologo'
-                    + ' /out:"%2"'
-                    + ' "%1"'
-                    + ' /wx'
-                    + ' $LibPaths$'
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Linux build setup
+
+#if __LINUX__
+    .BuildPlat  = 'linux'
+    .LibExt     = 'a'
+    .ObjExt     = 'o'
+#endif ; __LINUX__
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Package paths and input/output
+
+.PkgBin = 'bin\$BuildVer$\$BuildPlat$\$BuildArch$'
+.PkgObj = '$PkgBin$\intermediate'
+.PkgInc = 'inc'
+.PkgSrc = 'src'
+
+.CompilerInputPattern = '*.cxx'
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Compiler setup
+
+; Since multiple platforms use Clang we have to do this janky interweaving with
+; MSVC and other things.
+
+.CompilerOptions
+    = ''
+#if      __TOOL_MSVC__
+    + ' -nologo'		            ; No compiler spam
+#endif ; __TOOL_MSVC__
+    + ' -c %1'				        ; Only compile, don't link
+#if      __TOOL_MSVC__
+    + ' -Fo"%2"'		            ; Output file
+    + ' -O2'                        ; Optimize for speed over size
+    + ' -w3'				        ; Warning level 3 (4 is too pedantic)
+    + ' -wx'				        ; Warnings are errors
+#endif ; __CMP_MSVC
+#if      __TOOL_CLANG__
+    + ' -o %2'                      ; Output file
+    + ' -Oz'                        ; Optimize for speed and size
+    + ' -Wall'                      ; Show all warnings
+    + ' -Werror'                    ; Treat all warnings as errors
+#endif ; __TOOL_CLANG__
+    + ' -std'
+#if      __TOOL_MSVC__
+    + ':'
+#endif ; __TOOL_MSVC__
+#if      __TOOL_CLANG__
+    + '='
+#endif ; __TOOL_CLANG__
+    + 'c++$CxxStandard$'            ; Sets the C++ standard
+#if      __TOOL_CLANG__
+    + ' -ffast-math'                ; Fast floating-point math
+    + ' -fuse-ld=lld'               ; Use LLD instead of GNU LD
+    + ' -fno-exceptions'            ; Disable exceptions
+#endif ; __TOOL_CLANG__
+    + ' $IncludePaths$'             ; Include paths up to this point
+#if      __TOOL_MSVC__
+    + ' -EHsc'                      ; Exception stack unwinding
+    + ' -Qspectre'                  ; Disable spectre mitigations (build issues)
+#endif ; __TOOL_MSVC__
+#if      __BUILD_DEBUG__
+    #if      __TOOL_MSVC__
+    + ' -Z7'				        ; Debugging (.pdb)
+    + ' -MTd'                       ; Multi-threaded static stdlib (debug)
+    #endif ; __TOOL_MSVC__
+    #if      __TOOL_CLANG__
+    + ' -g'                         ; Generate debug info
+    #endif ; __TOOL_CLANG__
+#else
+    #if      __TOOL_MSVC__
+    + ' -MT'                        ; Multi-threaded static stdlib (dist)
+    #endif ; __TOOL_MSVC__
+    + ' -DNDEBUG'                   ; Define no-debug macro
+#endif ; __BUILD_DEBUG__
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Librarian setup
+
+.LibrarianOptions
+    = ''
+#if      __TOOL_MSVC__
+    + ' -nologo'
+    + ' -out:"%2"'
+    + ' "%1"'
+    + ' $LnkPaths$'
+#endif ; __TOOL_MSVC__
+#if      __TOOL_CLANG__
+    + ' rc %2 %1'
+    + ' $LibPaths$'
+#endif ; __TOOL_CLANG__
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Linker setup
+
+.LinkerOptions
+    = ''
+; Due to MSVC link.exe and LLVM lld-link.exe using the same flags,
+; we can use these regardless of if we build with MSVC or LLVM
+#if      __PLATFORM_REQUIRES_UWP__
+    + ' -nologo'
+    + ' "%1"'
+    + ' -out:"%2"'
+    + ' $LnkPaths$'
+    + ' kernel32.lib'
+    + ' vulkan-1.lib'
+#if      __BUILD_DEBUG__
+    + ' msvcrtd.lib'
+#else
+    + ' msvcrt.lib'
+#endif ; __BUILD_DEBUG
+    + ' /wx'
+#endif ; __PLATFORM_REQUIRES_UWP__
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Target Configs
 
 .CommonLibBase      = 'Code\CommonLib'
 .GameEditorBase     = 'Code\GameEngine\Editor'
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Target: CommonLib
+
 Library( 'CommonLib' )
 {
-    .CompilerOptions    = .CmpFlags
-
     .CompilerInputPath  = '$CommonLibBase$\$PkgSrc$'
     .CompilerOutputPath = '$CommonLibBase$\$PkgObj$'
+    .CommonLibInc       = '$CommonLibBase$\$PkgInc$'
 
-    .CompilerOptions    + ' /I"$CommonLibBase$\$PkgInc$"'   ; include path
+    .CompilerOptions    + ' $IncFlg$"$CommonLibInc$"'   ; include path
 
-    .LibrarianOptions   + ' kernel32.lib'
-                        + ' vulkan-1.lib'
+    .LibrarianOptions
+        + ''
+    #if      __PLATFORM_REQUIRES_UWP__
+        + ' $LibFlg$kernel32.lib'
+    #endif ; __PLATFORM_REQUIRES_UWP__
+        + ' $LibFlg$vulkan-1.lib'
 
     .LibrarianOutput    = '$CommonLibBase$\$PkgBin$\CommonLib-$BuildVer$.$LibExt$'
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Target: Lycan Engine (Editor)
+
 ObjectList( 'GameEditor-Lib' )
 {
-    .CompilerOptions        = .CmpFlags
-
     .CompilerInputPath      = '$GameEditorBase$\$PkgSrc$'
     .CompilerOutputPath     = '$GameEditorBase$\$PkgObj$'
 
-    .CompilerOptions        + ' /I"$GameEditorBase$\$PkgInc$"'  ; editor include
-                            + ' /I"$CommonLibBase$\$PkgInc$"'   ; commonlib include
+    .GameEditorInclude      = '$GameEditorBase$\$PkgInc$'
+    .CommonLibInclude       = '$CommonLibBase$\$PkgInc$'
+
+    .CompilerOptions        + ' $IncFlg$"$GameEditorInclude$"'  ; editor include
+                            + ' $IncFlg$"$CommonLibInclude$"'   ; commonlib include
 
     .PreBuildDependencies   = 'CommonLib-$BuildVer$.$LibExt$'
 }
 
 Executable( 'GameEditor' )
 {
-    .GameEditorBase     = 'Code\GameEngine\Editor'
-
     .Libraries          = 'GameEditor-Lib'
 
-    .LinkerOutput       = '$GameEditorBase$\$PkgBin$\GameEditor-$BuildVer$.$AppExt$'
-    .LinkerOptions      + ' /libpath:"$CommonLibBase$\$PkgBin$"'  ; depends on commonlib
-                        + ' CommonLib-$BuildVer$.$LibExt$'
+    .CommonLibLink      = 'CommonLib-$BuildVer$.$LibExt$'
+    .CommonLibBin       = '$CommonLibBase$\$PkgBin$'
+    .GameEditorBin      = '$GameEditorBase$\$PkgBin$'
+
+    .LinkerOutput       = '$GameEditorBin$\GameEditor-$BuildVer$.$AppExt$'
+
+    ; On Windows, lld-link uses the same options as MSVC link.exe
+    #if      __PLATFORM_REQUIRES_UWP__
+    .LinkerOptions
+        + ' $LptFlg$"$CommonLibBin$"'  ; depends on commonlib
+        + ' $CommonLibLink$'
     #if __BUILD_DEBUG__
-                        + ' /debug'
+        + ' /debug'
     #endif ; __BUILD_DEBUG__
+    #endif ; __PLATFORM_REQUIRES_UWP__
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Aliases
+
+Alias( 'all' )
+{
+    ; Not recommended to use 'all; but it is an option regardless.
+    .Targets = { 'CommonLib', 'GameEditor' }
 }
